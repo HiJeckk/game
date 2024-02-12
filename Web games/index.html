@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yes Sir</title>
+
+    <style type="text/css">
+
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body{
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            display: grid;
+            place-items: center;
+            font-family: sans-serif;
+            overflow: hidden;
+        }
+        .cont{
+            width: 100vw;
+            max-width: 500px;
+            height: 600px;
+            max-height: 800px;
+            background: repeating-linear-gradient(#d1d1d1, #dddddd 50px);
+            border-radius: 16px;
+            border: solid 2px #222;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-evenly;
+        }
+        #prgBar{
+            width: 75%;
+            height: 16px;
+            border: solid 2px #444;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .timeBar{
+            width: 0;
+            height: 100%;
+            background:#611c;
+            border-radius: 8px;
+            animation:timeBar 2.5s linear infinite;
+        }
+
+        @keyframes timeBar{
+            0%{
+                width: 0;
+            }
+            100%{
+                width: 110%;
+            }
+        }
+        #display{
+            width: 75%;
+            height: 200px;
+            border: solid 20px #4445;
+            border-radius: 16px;
+            background: #0004;
+            display: grid;
+            place-items: center;
+        }
+        #colors{
+            font-size: 38px;
+        }
+
+        .score{
+            width: 75%;
+            font-size: 22px;
+            display: grid;
+            place-items: center;
+        }
+
+        #scr{
+            font-size: 32px;
+            border: solid 2px #2224;
+            border-radius: 8px;
+            padding: 4px 28px;
+            background: #0002;
+        }
+
+    .controls{
+        width: 60%;
+        display: flex;
+        justify-content: space-between;
+        font-size: 28px;
+    }
+
+    #right, #wrong{
+        width: 48px;
+        height: 48px;
+        font-size: 28px;
+        border-radius: 50%;
+        border: none;
+        color: #fafafa;
+    }
+
+    #right{
+        background: #146c;
+    }
+    #wrong{
+        background: #b77c;
+    }
+
+    .startBtn{
+        height: 20px;
+    }
+    #startBtn{
+        font-size: 20px;
+        padding: 4px 8px;
+    }
+
+    .clicked{
+        transform:scale(0.8);
+        transition-duration: 0.2s;
+    }
+    </style>
+
+</head>
+<body>
+    <div class="cont">
+        <div id="prgBar" class="prgBar">
+            <div id="timeBar"></div>
+        </div>
+        <div id="display">
+            <h1 id="colors"></h1>
+        </div>
+        <div class="score">
+            <div id="src">0</div>
+        </div>
+        <div class="controls">
+            <button onclick="right()" id="right">&#10004;</button>
+            <button onclick="wrong()" id="wrong">&#10006;</button>
+        </div>
+        <div class="startBtn">
+            <button onclick="start()" id="startBtn">start</button>
+        </div>
+    </div>    
+</body>
+
+<script type="text/javascript">
+
+    var timeBar = document.getElementById('timeBar');
+    var colors = document.getElementById('colors');
+    var scr = document.getElementById('scr');
+    var tick = document.getElementById('right');
+    var cross = document.getElementById('wrong');
+    var startBtn = document.getElementById('startBtn');
+    
+    var i, j;
+    var score = 0;
+
+    function start(){
+        col();
+        timeBar.classList.add('timeBar');
+        startBtn.style.display = 'none' ;
+    }
+
+    function out(){
+        alert('out, your score is ${score}');
+        score = 0;
+        timeBar.classList.remove('timeBar');
+        startBtn.style.display = 'block' ;
+    }
+
+    function col(){
+        var col = ['red', 'blue', 'green', 'yellow', 'purple'] ;
+        i = Math.floor(Math.random()*5);
+        j = Math.floor(Math.random()*5);
+        colors.innerText = col[i] ;
+        colors.style.color = col[j];
+    }
+
+    function wrong(){
+        if (i != j){
+            col();
+            score++ ;
+
+            cross.classList.add('clicked');
+           timeBar.classList.remove('timeBar'); 
+            setTimeout(() => {
+                cross.classList.remove('clicked');
+                timeBar.classList.add('timeBar');
+            },200);
+        }
+        else{
+            out();
+        };
+    }
+
+    function right(){
+        if (i == j){
+            col();
+            score++ ;
+
+            tick.classList.add('clicked');
+            timeBar.classList.remove('timeBar');
+            setTimeout(() => {
+                tick.classList.remove('clicked');
+                timeBar.classList.add('timeBar');
+            },200);
+        }
+        else{ 
+            out();
+        };
+    }
+
+    document.onkeydown = function(e){
+        if (e.keyCode == 37) {
+            right();
+        }
+        if (e.keyCode == 39) {
+            wrong();
+        }
+    }
+
+    setInterval(() => {
+        var timeWidth = timeBar.offsetWidth;
+        var maxWidth = document.getElementById('prgBar').offsetWidth ;
+        if(timeWidth > maxWidth){
+            alert('timeout, your score is ${score}');
+            timeBar.classList.remove('timeBar');
+            startBtn.style.display = 'block' ;
+            setTimeout(() => {
+                score = 0 ;
+            },100)
+        }
+        else{  
+            scr.innerText = score ;
+        }
+    },1)
+</script>
+</html>  
